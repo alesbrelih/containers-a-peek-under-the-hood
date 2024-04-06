@@ -190,6 +190,10 @@ Inside cgroup.
 3. Span a new container with memory limit set.
 
 ```bash
+docker run --memory 50M --rm -d alpine sleep 100
+```
+
+```bash
 root@ubuntu-s-1vcpu-2gb-fra1-01:/# cat /sys/fs/cgroup/system.slice/docker-c6e5965511de6ffcffe2e778491d3d63ab244a30084ca74224bf58c55894bb6e.scope/memory.max
 52428800
 ```
