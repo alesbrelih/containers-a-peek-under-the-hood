@@ -145,3 +145,45 @@ Options:
 - lowerdir: are layers that will be immutable (Docker Image layers)
 - workdir: where overlay does its magic
 - upperdir: any changes inside mounted FS will be persisted here
+
+4. Fun fact. You don't need a Docker image to run a container but you usually need a container to run a Docker image.
+
+Example:
+
+- Place a long running task inside Dockerfile
+
+```bash
+root@ubuntu-s-1vcpu-2gb-fra1-01:/tmp/image# cat Dockerfile
+FROM alpine
+
+RUN sleep 50
+```
+
+- Run docker build
+
+```bash
+root@ubuntu-s-1vcpu-2gb-fra1-01:/tmp/image# docker build -t myimage .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM alpine
+latest: Pulling from library/alpine
+4abcf2066143: Pull complete
+Digest: sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b
+Status: Downloaded newer image for alpine:latest
+ ---> 05455a08881e
+Step 2/2 : RUN sleep 50
+ ---> Running in e6d74400f013
+```
+
+- Inspect docker processes
+
+```bash
+root@ubuntu-s-1vcpu-2gb-fra1-01:~# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS         PORTS     NAMES
+e6d74400f013   05455a08881e   "/bin/sh -c 'sleep 5…"   10 seconds ago   Up 9 seconds             agitated_rhodes
+```
+
+We see that building Docker image actually means spawning a container and executing `RUN` tasks in order.
